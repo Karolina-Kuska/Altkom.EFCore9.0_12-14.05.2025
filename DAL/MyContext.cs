@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DAL.Configurations;
+using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace DAL
 {
@@ -28,10 +30,29 @@ namespace DAL
             }
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            /*modelBuilder.Entity<Person>().Property(x => x.Name).HasColumnName("FirstName");
+            modelBuilder.Entity<Person>().Property(x => x.LastName).IsRequired().HasMaxLength(10);
+            modelBuilder.Entity<Person>().Property(x => x.PESEL)
+                //.HasColumnType("decimal(11,0)")
+                .HasPrecision(11, 0);
+            modelBuilder.Entity<Person>().Ignore(x => x.Address);*/
+
+            //ręczna rejestracja konfiguracji dla poszczególnych klas
+            /*modelBuilder.ApplyConfiguration(new PersonConfiguration());
+            modelBuilder.ApplyConfiguration(new AddressConfiguration());*/
+
+            //automatyczna rejestracja konfiguracji dla wszystkich klas implementujących IEntityTypeConfiguration we wskazanym assembly
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyContext).Assembly);
+        }
+
 
         //DbSet dla tabeli Person
-        public DbSet<Models.Person> People { get; }
-        public DbSet<Models.Address> Addresses { get; }
+        public DbSet<Models.Person_> People2 { get; }
+        //public DbSet<Models.Address_> Addresses { get; }
 
     }
 }
