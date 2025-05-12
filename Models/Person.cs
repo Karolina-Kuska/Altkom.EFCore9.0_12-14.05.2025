@@ -9,6 +9,6 @@
         public int Age { get; set; }
         public ulong PESEL { get; set; }
 
-        public Address_? Address { get; set; }
+        public Address? Address { get; set; }
     }
 }
