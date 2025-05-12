@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20250512142418_AddFullNameToPeople")]
+    partial class AddFullNameToPeople
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace DAL.Migrations
 
                     b.HasKey("AddressId");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("Models.Animal", b =>
@@ -62,7 +65,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("Animal", (string)null);
+                    b.ToTable("Animal");
                 });
 
             modelBuilder.Entity("Models.Localization", b =>
@@ -75,7 +78,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Latitude", "Longitude");
 
-                    b.ToTable("Localization", (string)null);
+                    b.ToTable("Localization");
                 });
 
             modelBuilder.Entity("Models.Person", b =>
@@ -100,7 +103,7 @@ namespace DAL.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(max)")
-                        .HasComputedColumnSql("CONCAT(FirstName, ' ', LastName)", true);
+                        .HasComputedColumnSql("CONCAT(FirstName, ' ', LastName)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -108,11 +111,6 @@ namespace DAL.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
                         .HasDefaultValue("Unknown");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("GETDATE()");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)")
@@ -141,7 +139,7 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Tag", (string)null);
+                    b.ToTable("Tag");
                 });
 #pragma warning restore 612, 618
         }
