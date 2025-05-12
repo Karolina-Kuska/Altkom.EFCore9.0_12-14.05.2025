@@ -28,5 +28,10 @@ namespace DAL
             }
         }
 
+
+        //DbSet dla tabeli Person
+        public DbSet<Models.Person> People { get; }
+        public DbSet<Models.Address> Addresses { get; }
+
     }
 }
