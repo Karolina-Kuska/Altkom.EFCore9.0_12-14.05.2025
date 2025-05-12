@@ -19,6 +19,9 @@ namespace DAL.Configurations
                 .HasPrecision(11, 0);
 
             builder.Ignore(x => x.Address);
+
+            builder.HasIndex(x => x.Name); //tworzy indeks na kolumnie Name
+            builder.HasIndex(x => new { x.Name, x.LastName }).IsUnique(); //tworzy unikalny indeks złożony na kolumnach Name i LastName
         }
     }
 }
