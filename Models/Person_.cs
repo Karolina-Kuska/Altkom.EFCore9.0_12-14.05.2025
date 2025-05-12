@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Models
 {
     //EF Core automatycznie mapuje klasy do tabel w bazie danych
     //mamy wpływ na konfigurację mapowania poprzez definicje właściwości i adnotacje
+    [Index(nameof(Name))] //tworzy indeks na kolumnie Name
+    [Index(nameof(Name), nameof(LastName), IsUnique = true)] //tworzy unikalny indeks złożony na kolumnach Name i LastName
     public class Person_
     {
         public int Id { get; set; }
