@@ -32,7 +32,6 @@ namespace DAL.Configurations
             //builder.Property(x => x.FullName).HasComputedColumnSql("CONCAT(FirstName, ' ', LastName)"); //ustawia kolumnę FullName jako kolumnę obliczaną, która łączy Name i LastName
             builder.Property(x => x.FullName).HasComputedColumnSql("CONCAT(FirstName, ' ', LastName)", stored: true); //ustawia kolumnę FullName jako kolumnę obliczaną i składowaną, która łączy Name i LastName
 
-
             builder.Property(x => x.ModifiedAt)
                 .HasComputedColumnSql("GETDATE()");
 

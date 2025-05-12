@@ -53,6 +53,16 @@ namespace DAL
 
             //automatyczna rejestracja konfiguracji dla wszystkich klas implementujących IEntityTypeConfiguration we wskazanym assembly
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyContext).Assembly);
+
+
+            modelBuilder.HasSequence<int>("MySequence")
+                .StartsAt(150)
+                .HasMin(100)
+                .HasMax(200)
+                .IncrementsBy(22)
+                .IsCyclic();
+
+            modelBuilder.HasSequence<int>("CustomId").StartsAt(1).IncrementsBy(1);
         }
 
 
