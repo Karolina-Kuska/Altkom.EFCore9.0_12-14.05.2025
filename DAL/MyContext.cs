@@ -8,6 +8,12 @@ namespace DAL
     {
         private readonly string? _connectionString;
 
+
+        public MyContext()
+        {
+
+        }
+
         //konstruktor z parametrem connectionString
         public MyContext(string connectionString)
         {
@@ -24,9 +30,9 @@ namespace DAL
             base.OnConfiguring(optionsBuilder);
 
             //jeśli nie skonfigurowano opcji, to dodajemy domyślną konfigurację na podstawie connectionString
-            if (!optionsBuilder.IsConfigured && _connectionString is not null)
+            if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(_connectionString);
+                optionsBuilder.UseSqlServer(_connectionString ?? string.Empty);
             }
         }
 
@@ -42,8 +48,8 @@ namespace DAL
             modelBuilder.Entity<Person>().Ignore(x => x.Address);*/
 
             //ręczna rejestracja konfiguracji dla poszczególnych klas
-            /*modelBuilder.ApplyConfiguration(new PersonConfiguration());
-            modelBuilder.ApplyConfiguration(new AddressConfiguration());*/
+            //modelBuilder.ApplyConfiguration(new PersonConfiguration());
+            //modelBuilder.ApplyConfiguration(new AddressConfiguration());
 
             //automatyczna rejestracja konfiguracji dla wszystkich klas implementujących IEntityTypeConfiguration we wskazanym assembly
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyContext).Assembly);
@@ -51,7 +57,7 @@ namespace DAL
 
 
         //DbSet dla tabeli Person
-        public DbSet<Models.Person_> People2 { get; }
+        //public DbSet<Models.Person_> People2 { get; }
         //public DbSet<Models.Address_> Addresses { get; }
 
     }

@@ -11,14 +11,14 @@ IConfiguration configuration = configurationBuilder.Build();
 
 
 
-using (var context = ContextWithDependencyInjection(configuration))
+/*using (var context = ContextWithDependencyInjection(configuration))
 {
     context.Database.EnsureDeleted();
-}
+}*/
 
 using (var context = ContextWithDbContextOptions(configuration))
 {
-    context.Database.EnsureCreated();
+    context.Database.Migrate();
 }
 
 
@@ -47,6 +47,7 @@ static MyContext ContextWithDbContextOptions(IConfiguration configuration)
 
     var builder = new DbContextOptionsBuilder<MyContext>();
     var options = builder.UseSqlServer(connectionString)
+        .LogTo(Console.WriteLine)
         .Options;
 
     return new MyContext(options);
