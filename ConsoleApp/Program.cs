@@ -141,8 +141,21 @@ using (var context = ContextWithDbContextOptions(configuration))
 }
 
 
+using (var context = ContextWithDbContextOptions(configuration))
+{
+   /*var user = new User { Username = Random.Shared.Next().ToString(), UserType = UserType.Admin, Password = "alamakota" };
+    context.Add(user);
+    var user2 = new User { Username = Random.Shared.Next().ToString(), UserType = UserType.User, Password = "alamakota" };
+    context.Add(user2);
 
-static MyContext ContextWithDependencyInjection(IConfiguration configuration)
+    context.SaveChanges();*/
+
+    var users = context.Set<User>().ToList();
+}
+
+
+
+    static MyContext ContextWithDependencyInjection(IConfiguration configuration)
 {
     var serviceCollection = new ServiceCollection();
     serviceCollection.AddDbContext<MyContext>(options =>
