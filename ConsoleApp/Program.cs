@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models.Inheritance;
 using Models.Relations;
 
 IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
@@ -93,8 +94,25 @@ using (var context = ContextWithDbContextOptions(configuration))
 
 
 
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    /*var company = new Company { Name = "A", NumberOfWorkers = Random.Shared.Next() };
+    var companyS = new SmallCompany { Name = "B", OwnerName = "S1" };
+    var companyL = new LargeCompany { Name = "C", OwnerName = "S2" , CoOwnerName = "L1"  };
 
-static MyContext ContextWithDependencyInjection(IConfiguration configuration)
+    context.Add(company);
+    context.Add(companyS);
+    context.Add(companyL);
+    context.SaveChanges();*/
+
+    var companies = context.Set<AbstractCompany>().ToList();
+}
+
+
+
+
+
+    static MyContext ContextWithDependencyInjection(IConfiguration configuration)
 {
     var serviceCollection = new ServiceCollection();
     serviceCollection.AddDbContext<MyContext>(options =>

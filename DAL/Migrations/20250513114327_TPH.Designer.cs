@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20250513114327_TPH")]
+    partial class TPH
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("DriversId");
 
-                    b.ToTable("CarDriver", (string)null);
+                    b.ToTable("CarDriver");
                 });
 
             modelBuilder.Entity("Models.Address", b =>
@@ -65,7 +68,7 @@ namespace DAL.Migrations
 
                     b.HasKey("AddressId");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("Models.Animal", b =>
@@ -86,7 +89,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("Animal", (string)null);
+                    b.ToTable("Animal");
                 });
 
             modelBuilder.Entity("Models.Inheritance.AbstractCompany", b =>
@@ -123,7 +126,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Latitude", "Longitude");
 
-                    b.ToTable("Localization", (string)null);
+                    b.ToTable("Localization");
                 });
 
             modelBuilder.Entity("Models.Person", b =>
@@ -209,7 +212,7 @@ namespace DAL.Migrations
                         .IsUnique()
                         .HasFilter("[RegistrationId] IS NOT NULL");
 
-                    b.ToTable("Car", (string)null);
+                    b.ToTable("Car");
                 });
 
             modelBuilder.Entity("Models.Relations.Driver", b =>
@@ -226,7 +229,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Driver", (string)null);
+                    b.ToTable("Driver");
                 });
 
             modelBuilder.Entity("Models.Relations.Engine", b =>
@@ -242,7 +245,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Engine", (string)null);
+                    b.ToTable("Engine");
                 });
 
             modelBuilder.Entity("Models.Relations.Registration", b =>
@@ -259,7 +262,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Registration", (string)null);
+                    b.ToTable("Registration");
                 });
 
             modelBuilder.Entity("Models.SequenceValues", b =>
@@ -279,7 +282,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SequenceValues", (string)null);
+                    b.ToTable("SequenceValues");
                 });
 
             modelBuilder.Entity("Models.Tag", b =>
@@ -288,7 +291,7 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Tag", (string)null);
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("Models.Inheritance.Company", b =>
