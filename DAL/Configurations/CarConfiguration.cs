@@ -14,9 +14,10 @@ namespace DAL.Configurations
         public void Configure(EntityTypeBuilder<Car> builder)
         {
 
-            builder.HasOne(x => x.Registration).WithOne(x => x.Car).HasForeignKey<Car>("RegistrationId")
+            builder.HasOne(x => x.Registration).WithOne(x => x.Car).HasForeignKey<Car>(x => x.RegistrationId)//.HasForeignKey<Car>("RegistrationId")
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(x => x.Engine).WithMany(x => x.Cars);
         }
     }
 }
