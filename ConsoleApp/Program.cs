@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models;
 using Models.Inheritance;
 using Models.Relations;
 
@@ -108,11 +109,26 @@ using (var context = ContextWithDbContextOptions(configuration))
     var companies = context.Set<AbstractCompany>().ToList();
 }
 
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    /*var person = new Person { Age = 30, LastName = "Last", Name = "First", PESEL = 12345678901 };
+    var student = new Student { Age = 20, LastName = "SLast", Name = "SFirst", PESEL = 12345678901, IndexNumber = Random.Shared.Next() };
+    var educator = new Educator { Age = 40, LastName = "ELast", Name = "EFirst", PESEL = 12345678901, Salary = Random.Shared.Next(), Specialization = "S" };
+
+    context.Add(person);
+    context.Add(student);
+    context.Add(educator);
+    context.SaveChanges();*/
+
+    var people = context.Set<Person>().ToList();
+
+}
 
 
 
 
-    static MyContext ContextWithDependencyInjection(IConfiguration configuration)
+
+static MyContext ContextWithDependencyInjection(IConfiguration configuration)
 {
     var serviceCollection = new ServiceCollection();
     serviceCollection.AddDbContext<MyContext>(options =>

@@ -8,6 +8,10 @@ namespace DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Person> builder)
         {
+            //ustawia strategię mapowania TPT (Table per Type) - każda klasa dziedzicząca ma swoją tabelę
+            //alternatywa dla ustawiania ToTable w każdej z klas dziedziczących
+            builder.UseTptMappingStrategy(); 
+
             builder.ToTable("People");
 
             builder.Property(x => x.Name).HasColumnName("FirstName");
