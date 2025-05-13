@@ -153,6 +153,13 @@ using (var context = ContextWithDbContextOptions(configuration))
     var users = context.Set<User>().ToList();
 }
 
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    var userType = "Admin; DELETE FROM Animal";
+
+    //var users = context.Set<User>().FromSqlRaw("EXEC GetUserByType @p0", userType).ToList();
+    var users = context.Set<User>().FromSqlInterpolated($"EXEC GetUserByType {userType}").ToList();
+}
 
 
     static MyContext ContextWithDependencyInjection(IConfiguration configuration)
