@@ -124,7 +124,21 @@ using (var context = ContextWithDbContextOptions(configuration))
 
 }
 
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    /*var animal = new Animal { Name = "A", Species = "A" };
+    var dog = new Dog { Name = "D", Species = "D", Breed = "D" };
+    var cat = new Cat { Name = "C", Species = "C", Color = "C" };
 
+    context.Add(animal);
+    context.Add(dog);
+    context.Add(cat);
+    context.SaveChanges();*/
+
+    var animals = context.Set<Animal>().ToList();
+    var cats = context.Set<Cat>().ToList();
+
+}
 
 
 

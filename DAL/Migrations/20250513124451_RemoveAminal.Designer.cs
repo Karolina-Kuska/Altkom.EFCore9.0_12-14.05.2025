@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20250513124451_RemoveAminal")]
+    partial class RemoveAminal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,8 +24,6 @@ namespace DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.HasSequence("AnimalSequence");
 
             modelBuilder.HasSequence<int>("CustomId");
 
@@ -68,30 +69,6 @@ namespace DAL.Migrations
                     b.HasKey("AddressId");
 
                     b.ToTable("Address");
-                });
-
-            modelBuilder.Entity("Models.Animal", b =>
-                {
-                    b.Property<int>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValueSql("NEXT VALUE FOR [AnimalSequence]");
-
-                    SqlServerPropertyBuilderExtensions.UseSequence(b.Property<int>("Key"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Species")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Key");
-
-                    b.ToTable("Animal");
-
-                    b.UseTpcMappingStrategy();
                 });
 
             modelBuilder.Entity("Models.Inheritance.AbstractCompany", b =>
@@ -296,28 +273,6 @@ namespace DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Tag");
-                });
-
-            modelBuilder.Entity("Models.Inheritance.Cat", b =>
-                {
-                    b.HasBaseType("Models.Animal");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("Cat");
-                });
-
-            modelBuilder.Entity("Models.Inheritance.Dog", b =>
-                {
-                    b.HasBaseType("Models.Animal");
-
-                    b.Property<string>("Breed")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("Dog");
                 });
 
             modelBuilder.Entity("Models.Inheritance.Company", b =>

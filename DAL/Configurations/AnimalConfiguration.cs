@@ -10,6 +10,8 @@ namespace DAL.Configurations
         {
             //konfiguracja wpasciwości jako klucza głównego
             builder.HasKey(x => x.Key);
+
+            builder.UseTpcMappingStrategy();
         }
     }
 }
