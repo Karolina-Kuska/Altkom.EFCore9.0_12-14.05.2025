@@ -56,4 +56,5 @@ namespace Services.Http
             return response.IsSuccessStatusCode;
 
         }
+    }
 }

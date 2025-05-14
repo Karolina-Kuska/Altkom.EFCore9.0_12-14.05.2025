@@ -22,54 +22,41 @@ IConfiguration configuration = configurationBuilder.Build();
     context.Database.EnsureDeleted();
 }*/
 
-using (var context = ContextWithDbContextOptions(configuration))
+/*using (var context = ContextWithDbContextOptions(configuration))
 {
 
     context.Database.EnsureDeleted();
     context.Database.Migrate();
-}
+}*/
 
-AddUpdate(configuration);
+//AddUpdate(configuration);
 //ChangeTrackerClear(configuration);
 //Remove(configuration);
 //Read(configuration);
+//RepositoryPattern(configuration);
 
-using (var context = ContextWithDbContextOptions(configuration))
+
+using (var context = new DAL.DatabaseFirst.MyContext(PrepareOptions<DAL.DatabaseFirst.MyContext>(configuration)))
 {
-    var service = new PeopleService(context);
+    var cars = context.Cars.ToArray();
 
-    var people = service.GetBySearchString("Jan").Result;
-}
-
-using (var context = ContextWithDbContextOptions(configuration))
-{
-    IPeopleService service = new PeopleCRUDService(context);
-
-    var people = service.ReadAllAsync().Result;
-    people = service.GetBySearchString("Jan").Result;
-}
-
-using (var context = ContextWithDbContextOptions(configuration))
-{
-    ICRUDService<Car> service = new CRUDService<Car>(context);
-
-    var cars = service.ReadAllAsync().Result;
+    var car = new DAL.DatabaseFirst.Models.Car() { Model = Random.Shared.Next().ToString() };
+    context.Cars.Add(car);
+    context.SaveChanges();
 }
 
 
 
+    static MyContext ContextWithDependencyInjection(IConfiguration configuration)
+    {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddDbContext<MyContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString(nameof(MyContext))));
 
+        var serviceProvider = serviceCollection.BuildServiceProvider();
 
-static MyContext ContextWithDependencyInjection(IConfiguration configuration)
-{
-    var serviceCollection = new ServiceCollection();
-    serviceCollection.AddDbContext<MyContext>(options =>
-        options.UseSqlServer(configuration.GetConnectionString(nameof(MyContext))));
-
-    var serviceProvider = serviceCollection.BuildServiceProvider();
-
-    return serviceProvider.GetRequiredService<MyContext>();
-}
+        return serviceProvider.GetRequiredService<MyContext>();
+    }
 
 static MyContext ContextWithConnectionString(IConfiguration configuration)
 {
@@ -79,12 +66,7 @@ static MyContext ContextWithConnectionString(IConfiguration configuration)
 
 static MyContext ContextWithDbContextOptions(IConfiguration configuration)
 {
-    var connectionString = configuration.GetConnectionString("MyContext")!;
-
-    var builder = new DbContextOptionsBuilder<MyContext>();
-    var options = builder.UseSqlServer(connectionString)
-        .LogTo(Console.WriteLine)
-        .Options;
+    DbContextOptions<MyContext> options = PrepareOptions<MyContext>(configuration);
 
     return new MyContext(options);
 }
@@ -523,5 +505,41 @@ static void Read(IConfiguration configuration)
 
         var cars = query.ToArray();
 
+    }
+}
+
+static DbContextOptions<T> PrepareOptions<T>(IConfiguration configuration) where T : DbContext
+{
+    var connectionString = configuration.GetConnectionString("MyContext")!;
+
+    var builder = new DbContextOptionsBuilder<T>();
+    var options = builder.UseSqlServer(connectionString)
+        .LogTo(Console.WriteLine)
+        .Options;
+    return options;
+}
+
+static void RepositoryPattern(IConfiguration configuration)
+{
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        var service = new PeopleService(context);
+
+        var people = service.GetBySearchString("Jan").Result;
+    }
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        IPeopleService service = new PeopleCRUDService(context);
+
+        var people = service.ReadAllAsync().Result;
+        people = service.GetBySearchString("Jan").Result;
+    }
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        ICRUDService<Car> service = new CRUDService<Car>(context);
+
+        var cars = service.ReadAllAsync().Result;
     }
 }
