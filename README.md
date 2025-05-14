@@ -35,3 +35,14 @@ dotnet tool uninstall --global dotnet-ef
    
    Update-Database [-connection "<conneciton string>"]
    ```
+* Db First
+  * CLI
+  ```
+  dotnet ef dbcontext scaffold <connection string> <provider package> [--output-dir <folder>] [--context <context name>] [-f]
+  dotnet ef dbcontext scaffold "Server=(local);Database=EF;Integrated security=true;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context MyContext -f
+  ```
+  * PMC
+  ```
+  dotnet ef dbcontext scaffold  <connection string> <provider package> [--output-dir <folder>] [--context <context name>] [-f]
+  dotnet ef dbcontext scaffold "Server=(local);Database=EF;Integrated security=true;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context MyContext -f
+  ```
