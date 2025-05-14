@@ -29,20 +29,109 @@ using (var context = ContextWithDbContextOptions(configuration))
 
 //AddUpdate(configuration);
 //ChangeTrackerClear(configuration);
+//Remove(configuration);
 
-AddUpdate(configuration);
 
 using (var context = ContextWithDbContextOptions(configuration))
 {
-    var car = new Car() { Id = 1, Registration = new Registration { Id = 2 } };
-    //Remove stosowany jest tylko do obiektu przekazanego do metody, a nie do obiektów zagnieżdzonych (tak jak to robią metody Add i Update)
-    context.Set<Car>().Remove(car);
-    Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
+    var car = new Car() { Model = Random.Shared.Next().ToString() };
+    var registration = new Registration() { Number = Random.Shared.Next().ToString() };
+    car.Registration = registration;
+
+    var engine = new Engine() { Power = Random.Shared.Next() };
+    car.Engine = engine;
+
+    var driver1 = new Driver() { Name = Random.Shared.Next().ToString() };
+    var driver2 = new Driver() { Name = Random.Shared.Next().ToString() };
+    car.Drivers.Add(driver1);
+    car.Drivers.Add(driver2);
+
+    context.Add(car);
+    Console.WriteLine( context.ChangeTracker.DebugView.LongView);
 
     context.SaveChanges();
+
+    car = new Car() { Model = Random.Shared.Next().ToString() };
+    registration = new Registration() { Number = Random.Shared.Next().ToString() };
+    car.Registration = registration;
+    car.Drivers.Add(driver1);
+    car.Engine = engine;
+
+    context.Add(car);
+    context.SaveChanges();
+}
+
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    var cars = context.Set<Car>().ToArray();
+
+    cars[0].Registration = context.Set<Registration>().SingleOrDefault(x => cars[0].RegistrationId == x.Id);
+
+    context.Entry(cars[0]).Reference(x => x.Engine).Load();
+    context.Entry(cars[0]).Collection(x => x.Drivers).Load();
+
+}
+
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    var cars = context.Set<Car>().Include(x => x.Registration).Include(x => x.Engine).Include(x => x.Drivers).ToArray();
+}
+
+
+
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    //ThenInclude występuje tylko po Include i pozwała na załadowanie kolejnych relacji (odpowiednik Include(x => x.Drivers.Select(xx => xx.Cars) z EF5/6)
+    var cars = context.Set<Driver>().Include(x => x.Car).ThenInclude(x => x.Registration).ToArray();
+}
+
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    //AsNoTracking powoduje, że obiekty nie będą śledzone przez kontekst i nie będą miały ustawionego stanu
+    //przyśpiesza to ładowanie danych, ale nie można na nich wykonywać żadnych operacji przez kontekst
+    var cars = context.Set<Car>().AsNoTracking().Include(x => x.Drivers).ToArray();
     Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
 
-    Console.WriteLine(context.Entry(car).State);
+    //AsNoTraking powoduje, że obiekty są pozbawione referencji (obiekty o tym samym id są osobnymi instancjami)
+    Console.WriteLine(cars[0].Drivers.First().Id == cars[1].Drivers.First().Id); //True
+    Console.WriteLine(cars[0].Drivers.First() == cars[1].Drivers.First()); //False
+
+    cars = context.Set<Car>().Include(x => x.Drivers).ToArray();
+    //bez AsNoTracking obiekty są śledzone przez ChangeTracker
+    //przyśpiesza to operacje zapisu, ale spowalnia odczyt
+    //obiekty są śledzone przez ChangeTracker, więc obiekty o tym samym id są tym samym obiektem
+    Console.WriteLine(cars[0].Drivers.First().Id == cars[1].Drivers.First().Id); //True
+    Console.WriteLine(cars[0].Drivers.First() == cars[1].Drivers.First()); //True
+}
+
+
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    IQueryable<Car> query = context.Set<Car>().AsNoTracking();
+
+    Console.WriteLine("\nInclude engine?");
+    if(Console.ReadKey().KeyChar == 'y')
+    {
+        query = query.Include(x => x.Engine);
+    }
+    Console.WriteLine("\nInclude registration?");
+    if (Console.ReadKey().KeyChar == 'y')
+    {
+        query = query.Include(x => x.Registration);
+    }
+    Console.WriteLine("\nInclude drivers?");
+    if (Console.ReadKey().KeyChar == 'y')
+    {
+        query = query.Include(x => x.Drivers);
+    }
+    Console.WriteLine("\nSort by model?");
+    if (Console.ReadKey().KeyChar == 'y')
+    {
+        query = query.OrderBy(x => x.Model);
+    }
+
+    var cars = query.ToArray();
+
 }
 
 
@@ -387,4 +476,22 @@ static void ChangeTrackerClear(IConfiguration configuration)
 
     Console.WriteLine(timer.ElapsedMilliseconds);
     Console.ReadLine();
+}
+
+static void Remove(IConfiguration configuration)
+{
+    AddUpdate(configuration);
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        var car = new Car() { Id = 1, Registration = new Registration { Id = 2 } };
+        //Remove stosowany jest tylko do obiektu przekazanego do metody, a nie do obiektów zagnieżdzonych (tak jak to robią metody Add i Update)
+        context.Set<Car>().Remove(car);
+        Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
+
+        context.SaveChanges();
+        Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
+
+        Console.WriteLine(context.Entry(car).State);
+    }
 }
