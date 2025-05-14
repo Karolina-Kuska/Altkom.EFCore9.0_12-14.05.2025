@@ -28,75 +28,25 @@ using (var context = ContextWithDbContextOptions(configuration))
 }
 
 //AddUpdate(configuration);
+//ChangeTrackerClear(configuration);
 
-string[] statuses = new[] { "A", "B", "C", "D" };
-
+AddUpdate(configuration);
 
 using (var context = ContextWithDbContextOptions(configuration))
 {
-    foreach (var item in statuses)
-    {
-        context.Add(new Status { Id = item });
-    }
+    var car = new Car() { Id = 1, Registration = new Registration { Id = 2 } };
+    //Remove stosowany jest tylko do obiektu przekazanego do metody, a nie do obiektów zagnieżdzonych (tak jak to robią metody Add i Update)
+    context.Set<Car>().Remove(car);
+    Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
 
-    var component = new Component();
-
-    context.Add(component);
     context.SaveChanges();
+    Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
 
+    Console.WriteLine(context.Entry(car).State);
 }
 
 
-var timer = new System.Diagnostics.Stopwatch();
-timer.Start();
-for (int i = 0; i < 1000; i++)
-{
-    using (var context = ContextWithDbContextOptions(configuration))
-    {
-        var subComponent = new SubComponent();
-        subComponent.Component = new Component { Id = 1 };
-        subComponent.Status = new Status { Id = statuses[i % statuses.Length] };
-
-        context.Attach(subComponent.Component);
-        context.Attach(subComponent.Status);
-
-        context.Add(subComponent);
-
-        context.SaveChanges();
-    }
-}
-timer.Stop();
-
-Console.WriteLine(timer.ElapsedMilliseconds);
-Console.ReadLine();
-
-timer = new System.Diagnostics.Stopwatch();
-timer.Start();
-using (var context = ContextWithDbContextOptions(configuration))
-{
-    for (int i = 0; i < 1000; i++)
-    {
-
-        var subComponent = new SubComponent();
-        subComponent.Component = new Component { Id = 1 };
-        subComponent.Status = new Status { Id = statuses[i % statuses.Length] };
-
-        context.Attach(subComponent.Component);
-        context.Attach(subComponent.Status);
-
-        context.Add(subComponent);
-
-        context.SaveChanges();
-        context.ChangeTracker.Clear();
-    }
-}
-timer.Stop();
-
-Console.WriteLine(timer.ElapsedMilliseconds);
-Console.ReadLine();
-
-
-static MyContext ContextWithDependencyInjection(IConfiguration configuration)
+    static MyContext ContextWithDependencyInjection(IConfiguration configuration)
 {
     var serviceCollection = new ServiceCollection();
     serviceCollection.AddDbContext<MyContext>(options =>
@@ -368,4 +318,73 @@ static void AddUpdate(IConfiguration configuration)
 
         context.SaveChanges();
     }
+}
+
+static void ChangeTrackerClear(IConfiguration configuration)
+{
+    string[] statuses = new[] { "A", "B", "C", "D" };
+
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        foreach (var item in statuses)
+        {
+            context.Add(new Status { Id = item });
+        }
+
+        var component = new Component();
+
+        context.Add(component);
+        context.SaveChanges();
+
+    }
+
+
+    var timer = new System.Diagnostics.Stopwatch();
+    timer.Start();
+    for (int i = 0; i < 1000; i++)
+    {
+        using (var context = ContextWithDbContextOptions(configuration))
+        {
+            var subComponent = new SubComponent();
+            subComponent.Component = new Component { Id = 1 };
+            subComponent.Status = new Status { Id = statuses[i % statuses.Length] };
+
+            context.Attach(subComponent.Component);
+            context.Attach(subComponent.Status);
+
+            context.Add(subComponent);
+
+            context.SaveChanges();
+        }
+    }
+    timer.Stop();
+
+    Console.WriteLine(timer.ElapsedMilliseconds);
+    Console.ReadLine();
+
+    timer = new System.Diagnostics.Stopwatch();
+    timer.Start();
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+
+            var subComponent = new SubComponent();
+            subComponent.Component = new Component { Id = 1 };
+            subComponent.Status = new Status { Id = statuses[i % statuses.Length] };
+
+            context.Attach(subComponent.Component);
+            context.Attach(subComponent.Status);
+
+            context.Add(subComponent);
+
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
+        }
+    }
+    timer.Stop();
+
+    Console.WriteLine(timer.ElapsedMilliseconds);
+    Console.ReadLine();
 }
