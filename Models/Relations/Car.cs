@@ -1,8 +1,7 @@
 ﻿namespace Models.Relations
 {
-    public class Car
+    public class Car : Entity
     {
-        public int Id { get; set; }
         public string Model { get; set; } = string.Empty;
 
         public int? RegistrationId { get; set; }

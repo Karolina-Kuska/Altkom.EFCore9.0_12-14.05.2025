@@ -7,6 +7,7 @@ using Models;
 using Models.Components;
 using Models.Inheritance;
 using Models.Relations;
+using Services.Interfaces;
 
 IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
 configurationBuilder.AddJsonFile("appsettings.json");
@@ -40,11 +41,26 @@ using (var context = ContextWithDbContextOptions(configuration))
     var people = service.GetBySearchString("Jan").Result;
 }
 
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    IPeopleService service = new PeopleCRUDService(context);
+
+    var people = service.ReadAllAsync().Result;
+    people = service.GetBySearchString("Jan").Result;
+}
+
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    ICRUDService<Car> service = new CRUDService<Car>(context);
+
+    var cars = service.ReadAllAsync().Result;
+}
 
 
 
 
-    static MyContext ContextWithDependencyInjection(IConfiguration configuration)
+
+static MyContext ContextWithDependencyInjection(IConfiguration configuration)
 {
     var serviceCollection = new ServiceCollection();
     serviceCollection.AddDbContext<MyContext>(options =>
