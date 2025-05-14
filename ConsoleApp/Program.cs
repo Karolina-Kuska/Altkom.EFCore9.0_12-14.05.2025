@@ -21,144 +21,114 @@ IConfiguration configuration = configurationBuilder.Build();
 
 using (var context = ContextWithDbContextOptions(configuration))
 {
+
+    context.Database.EnsureDeleted();
     context.Database.Migrate();
 }
 
 
-
-/*using (var context = ContextWithDbContextOptions(configuration))
-{
-    var car = new Car() { Model = Random.Shared.Next().ToString() };
-    var registration = new Registration() { Number = Random.Shared.Next().ToString() };
-    car.Registration = registration;
-    context.Add(car);
-
-    car = new Car() { Model = Random.Shared.Next().ToString() };
-    registration = new Registration() { Number = Random.Shared.Next().ToString() };
-    registration.Car = car;
-
-    context.Add(registration);
-    context.SaveChanges();
-}
-*/
-/*using (var context = ContextWithDbContextOptions(configuration))
-{
-    var car = new Car() { Model = Random.Shared.Next().ToString() };
-    var engine = new Engine() { Power = Random.Shared.Next() };
-    car.Engine = engine;
-    engine.Cars.Add(car);
-    //context.Add(car);
-
-    car = new Car() { Model = Random.Shared.Next().ToString() };
-    car.Engine = engine;
-    engine.Cars.Add(car);
-    //context.Add(car);
-
-    context.Add(engine);
-
-    context.SaveChanges();
-}*/
-
-/*using (var context = ContextWithDbContextOptions(configuration))
-{
-    var driver = new Driver() { Name = Random.Shared.Next().ToString() };
-    var car = new Car() { Model = Random.Shared.Next().ToString() };
-    car.Drivers.Add(driver);
-
-    context.Add(car);
-
-    car = new Car() { Model = Random.Shared.Next().ToString() };
-    driver.Car.Add(car);
-
-    context.Add(driver);
-
-    context.SaveChanges();
-}*/
-
-
 using (var context = ContextWithDbContextOptions(configuration))
 {
-    //eager loading = wczesne ładowanie - ładowanie powiązanych danych z wykorzystaniem Include
-    //zaleca się gdy ilość Include jest nie większa niż 2-3
-    var cars = context.Set<Car>().Include(x => x.Registration).Include(x => x.Engine).ToList();
-}
 
+    var person = new Person { Age = 30, LastName = "Kowalski", Name = "Jan", PESEL = 12345678901 };
 
-using (var context = ContextWithDbContextOptions(configuration))
-{
-    var cars = context.Set<Car>().ToList();
+    //odwołujemy się do konkretnej tabeli poprzez DBSet<T> zadeklarowany w kontekście
+    context.People.Add(person);
 
-    //explicit loading = jawne ładowanie - dane ładowane są w późniejszym czasie do kontekstu i wiązane z danymi już się tam znajdującymi
-    context.Entry(cars.Last()).Reference(x => x.Engine).Load();
-    context.Set<Registration>()/*.Where(x => x.Number.Contains("0"))*/.Load();
-}
+    var student = new Student { Age = 20, LastName = "Nowak", Name = "Anna", PESEL = 12345678901, IndexNumber = Random.Shared.Next() };
 
+    //odwołujemy się do konkretnej tabeli poprzez generyczną metodę Set<T>()
+    context.Set<Student>().Add(student);
 
+    person = new Educator { Age = 40, LastName = "Kowalska", Name = "Joanna", PESEL = 12345678901, Salary = Random.Shared.Next(), Specialization = "Matematyka" };
 
-using (var context = ContextWithDbContextOptions(configuration))
-{
-    /*var company = new Company { Name = "A", NumberOfWorkers = Random.Shared.Next() };
-    var companyS = new SmallCompany { Name = "B", OwnerName = "S1" };
-    var companyL = new LargeCompany { Name = "C", OwnerName = "S2" , CoOwnerName = "L1"  };
-
-    context.Add(company);
-    context.Add(companyS);
-    context.Add(companyL);
-    context.SaveChanges();*/
-
-    var companies = context.Set<AbstractCompany>().ToList();
-}
-
-using (var context = ContextWithDbContextOptions(configuration))
-{
-    /*var person = new Person { Age = 30, LastName = "Last", Name = "First", PESEL = 12345678901 };
-    var student = new Student { Age = 20, LastName = "SLast", Name = "SFirst", PESEL = 12345678901, IndexNumber = Random.Shared.Next() };
-    var educator = new Educator { Age = 40, LastName = "ELast", Name = "EFirst", PESEL = 12345678901, Salary = Random.Shared.Next(), Specialization = "S" };
-
+    //odwołujemy się do metody, która automatycznie wybiera odpowiednią tabelę na podstawie typu
     context.Add(person);
-    context.Add(student);
-    context.Add(educator);
-    context.SaveChanges();*/
 
-    var people = context.Set<Person>().ToList();
-
+    context.SaveChanges();
 }
 
-using (var context = ContextWithDbContextOptions(configuration))
-{
-    /*var animal = new Animal { Name = "A", Species = "A" };
-    var dog = new Dog { Name = "D", Species = "D", Breed = "D" };
-    var cat = new Cat { Name = "C", Species = "C", Color = "C" };
-
-    context.Add(animal);
-    context.Add(dog);
-    context.Add(cat);
-    context.SaveChanges();*/
-
-    var animals = context.Set<Animal>().ToList();
-    var cats = context.Set<Cat>().ToList();
-
-}
 
 
 using (var context = ContextWithDbContextOptions(configuration))
 {
-   /*var user = new User { Username = Random.Shared.Next().ToString(), UserType = UserType.Admin, Password = "alamakota" };
-    context.Add(user);
-    var user2 = new User { Username = Random.Shared.Next().ToString(), UserType = UserType.User, Password = "alamakota" };
-    context.Add(user2);
 
-    context.SaveChanges();*/
+    var car = new Car() { Model = Random.Shared.Next().ToString() };
+    context.Add(car);
+    context.SaveChanges();
 
-    var users = context.Set<User>().ToList();
+    car = new Car() { Model = Random.Shared.Next().ToString() };
+    car.Registration = new Registration() { Number = Random.Shared.Next().ToString() };
+    context.Add(car);
+
+    Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    context.SaveChanges();
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    car.Model = "Opel";
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    //zmiany w ChangeTracker są widoczne dopiero po wywołaniu DetectChanges, SaveChanges lub odwołaniu się do Entry
+    context.ChangeTracker.DetectChanges();
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    context.SaveChanges();
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    car.Model = "alamakota";
+    Console.WriteLine(context.Entry(car).State);
+}
+
+
+
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    var car = new Car() { Model = Random.Shared.Next().ToString(), Id = 2 };
+
+
+    //context.Set<Car>().Add(car);
+    context.Update(car);
+
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+
+    //możemy wysterować co ma być aktualizowane w bazie danych
+    context.Entry(car).Property(x => x.RegistrationId).IsModified = false;
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    //możemy też zmienić stan całej encji
+    //context.Entry(car).State = EntityState.Deleted;
+
+    context.SaveChanges();
 }
 
 using (var context = ContextWithDbContextOptions(configuration))
 {
-    var userType = "Admin; DELETE FROM Animal";
+    var car = new Car() { Model = Random.Shared.Next().ToString() };
+    //update działa jak AddOrUpdate w zależności od wartości klucza głównego (jeśli jest 0 to dodaje, jeśli jest > 0 to aktualizuje)
+    context.Update(car);
 
-    //var users = context.Set<User>().FromSqlRaw("EXEC GetUserByType @p0", userType).ToList();
-    var users = context.Set<User>().FromSqlInterpolated($"EXEC GetUserByType {userType}").ToList();
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+    //context.SaveChanges();
+}
+
+
+using (var context = ContextWithDbContextOptions(configuration))
+{
+    var registration = new Registration() { Number = Random.Shared.Next().ToString() };
+    registration.Car = new Car { Id = 1 };
+
+    //podłączenie obiektu do kontekstu i uznanie go za istniejący i niezmieniony w stosunku do tego co jest w bazie danych
+    context.Attach(registration.Car);
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    //add bez zastosowania Attach spowoduje dodanie nowego samochodu z ustawionym ID (co spowoduje błąd bo ID jest generowanie przez bazę danych)
+    context.Add(registration);
+    Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
+    context.SaveChanges();
 }
 
 
@@ -189,4 +159,142 @@ static MyContext ContextWithDbContextOptions(IConfiguration configuration)
         .Options;
 
     return new MyContext(options);
+}
+
+static void Modeling(IConfiguration configuration)
+{
+    /*using (var context = ContextWithDbContextOptions(configuration))
+    {
+        var car = new Car() { Model = Random.Shared.Next().ToString() };
+        var registration = new Registration() { Number = Random.Shared.Next().ToString() };
+        car.Registration = registration;
+        context.Add(car);
+
+        car = new Car() { Model = Random.Shared.Next().ToString() };
+        registration = new Registration() { Number = Random.Shared.Next().ToString() };
+        registration.Car = car;
+
+        context.Add(registration);
+        context.SaveChanges();
+    }
+    */
+    /*using (var context = ContextWithDbContextOptions(configuration))
+    {
+        var car = new Car() { Model = Random.Shared.Next().ToString() };
+        var engine = new Engine() { Power = Random.Shared.Next() };
+        car.Engine = engine;
+        engine.Cars.Add(car);
+        //context.Add(car);
+
+        car = new Car() { Model = Random.Shared.Next().ToString() };
+        car.Engine = engine;
+        engine.Cars.Add(car);
+        //context.Add(car);
+
+        context.Add(engine);
+
+        context.SaveChanges();
+    }*/
+
+    /*using (var context = ContextWithDbContextOptions(configuration))
+    {
+        var driver = new Driver() { Name = Random.Shared.Next().ToString() };
+        var car = new Car() { Model = Random.Shared.Next().ToString() };
+        car.Drivers.Add(driver);
+
+        context.Add(car);
+
+        car = new Car() { Model = Random.Shared.Next().ToString() };
+        driver.Car.Add(car);
+
+        context.Add(driver);
+
+        context.SaveChanges();
+    }*/
+
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        //eager loading = wczesne ładowanie - ładowanie powiązanych danych z wykorzystaniem Include
+        //zaleca się gdy ilość Include jest nie większa niż 2-3
+        var cars = context.Set<Car>().Include(x => x.Registration).Include(x => x.Engine).ToList();
+    }
+
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        var cars = context.Set<Car>().ToList();
+
+        //explicit loading = jawne ładowanie - dane ładowane są w późniejszym czasie do kontekstu i wiązane z danymi już się tam znajdującymi
+        context.Entry(cars.Last()).Reference(x => x.Engine).Load();
+        context.Set<Registration>()/*.Where(x => x.Number.Contains("0"))*/.Load();
+    }
+
+
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        /*var company = new Company { Name = "A", NumberOfWorkers = Random.Shared.Next() };
+        var companyS = new SmallCompany { Name = "B", OwnerName = "S1" };
+        var companyL = new LargeCompany { Name = "C", OwnerName = "S2" , CoOwnerName = "L1"  };
+
+        context.Add(company);
+        context.Add(companyS);
+        context.Add(companyL);
+        context.SaveChanges();*/
+
+        var companies = context.Set<AbstractCompany>().ToList();
+    }
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        /*var person = new Person { Age = 30, LastName = "Last", Name = "First", PESEL = 12345678901 };
+        var student = new Student { Age = 20, LastName = "SLast", Name = "SFirst", PESEL = 12345678901, IndexNumber = Random.Shared.Next() };
+        var educator = new Educator { Age = 40, LastName = "ELast", Name = "EFirst", PESEL = 12345678901, Salary = Random.Shared.Next(), Specialization = "S" };
+
+        context.Add(person);
+        context.Add(student);
+        context.Add(educator);
+        context.SaveChanges();*/
+
+        var people = context.Set<Person>().ToList();
+
+    }
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        /*var animal = new Animal { Name = "A", Species = "A" };
+        var dog = new Dog { Name = "D", Species = "D", Breed = "D" };
+        var cat = new Cat { Name = "C", Species = "C", Color = "C" };
+
+        context.Add(animal);
+        context.Add(dog);
+        context.Add(cat);
+        context.SaveChanges();*/
+
+        var animals = context.Set<Animal>().ToList();
+        var cats = context.Set<Cat>().ToList();
+
+    }
+
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        /*var user = new User { Username = Random.Shared.Next().ToString(), UserType = UserType.Admin, Password = "alamakota" };
+         context.Add(user);
+         var user2 = new User { Username = Random.Shared.Next().ToString(), UserType = UserType.User, Password = "alamakota" };
+         context.Add(user2);
+
+         context.SaveChanges();*/
+
+        var users = context.Set<User>().ToList();
+    }
+
+    using (var context = ContextWithDbContextOptions(configuration))
+    {
+        var userType = "Admin; DELETE FROM Animal";
+
+        //var users = context.Set<User>().FromSqlRaw("EXEC GetUserByType @p0", userType).ToList();
+        var users = context.Set<User>().FromSqlInterpolated($"EXEC GetUserByType {userType}").ToList();
+    }
 }

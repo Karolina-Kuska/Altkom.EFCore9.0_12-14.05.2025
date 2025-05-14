@@ -70,5 +70,6 @@ namespace DAL
         //public DbSet<Models.Person_> People2 { get; }
         //public DbSet<Models.Address_> Addresses { get; }
 
+        public DbSet<Person> People { get; set; }
     }
 }
