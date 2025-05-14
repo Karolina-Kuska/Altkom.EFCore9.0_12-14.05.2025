@@ -4,8 +4,11 @@ using WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DbContext, MyContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString(nameof(MyContext))));
+/*builder.Services.AddDbContext<DbContext, MyContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString(nameof(MyContext))));*/
+
+builder.Services.AddDbContextPool<MyContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString(nameof(MyContext))), 32);
 
 builder.Services.AddScoped<MyService>();
 

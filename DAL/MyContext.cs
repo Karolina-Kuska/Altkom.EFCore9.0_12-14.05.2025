@@ -1,6 +1,7 @@
 ﻿using DAL.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Components;
 
 namespace DAL
 {
@@ -63,6 +64,10 @@ namespace DAL
                 .IsCyclic();
 
             modelBuilder.HasSequence<int>("CustomId").StartsAt(1).IncrementsBy(1);
+
+            modelBuilder.Entity<Status>();
+            modelBuilder.Entity<Component>();
+            modelBuilder.Entity<SubComponent>();
         }
 
 
