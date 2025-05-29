@@ -35,12 +35,12 @@ ZAGADNIENIA
    - Wzorzec repozytorium
    - Wzorzec repozytorium generyczne
 10. SQL
-   - Uruchamianie poleceń SQL
-   - Przekazywanie parametrów
-   - Uruchamianie procedur składowych
+    - Uruchamianie poleceń SQL
+    - Przekazywanie parametrów
+    - Uruchamianie procedur składowych
 11. Operacje asynchroniczne
-   - Zapytania asynchroniczne
-   - Zapis asynchroniczny
+    - Zapytania asynchroniczne
+    - Zapis asynchroniczny
 12. Diagnostyka
 
 --------------------------------------------------
