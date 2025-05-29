@@ -1,3 +1,49 @@
+ZAGADNIENIA
+1. Podstawy
+   - Instalacja Entity Framework Core
+   - Utworzenie kontekstu DbContext
+   - Dostawcy baz danych
+   - Konfiguracja parametrów połącznia do bazy danych
+2. Tworzenie nowego połączenia
+   - Code First
+   - Database First
+3. Konwencje
+4. Tworzenie modelu
+   - Klucze
+   - Indeksy
+   - Właściwości w tle
+   - Konwertery wbudowane
+   - Kolejność kolumn
+5. Konfiguracja encji
+   - Adnotacje
+   - Fluent API
+6. Dziedziczenie
+   - TPH (table-per-hierarchy)
+   - TPT (table-per-type)
+   - TPC (table-per-concrete)
+7. Relacje
+   - Jeden-do-jeden
+   - Jeden-do-wielu
+   - Wiele-do-wielu
+8. Migracje
+   - Dodawanie
+   - Usuwanie
+   - Aktualizacja bazy danych
+   - Pakiety migracji
+9. Zarządzanie danymi
+   - Operacje CRUD
+   - Wzorzec repozytorium
+   - Wzorzec repozytorium generyczne
+10. SQL
+   - Uruchamianie poleceń SQL
+   - Przekazywanie parametrów
+   - Uruchamianie procedur składowych
+11. Operacje asynchroniczne
+   - Zapytania asynchroniczne
+   - Zapis asynchroniczny
+12. Diagnostyka
+
+
 * Pakiety
 ```
 Microsoft.EntityFrameworkCore.SqlServer - dostawca bazy danych
