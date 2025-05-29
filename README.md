@@ -43,6 +43,7 @@ ZAGADNIENIA
    - Zapis asynchroniczny
 12. Diagnostyka
 
+--------------------------------------------------
 
 * Pakiety
 ```
